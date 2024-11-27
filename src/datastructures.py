@@ -19,18 +19,26 @@ class FamilyStructure:
     def _generateId(self):
         return randint(0, 99999999)
 
-    def add_member(self, member):
-        # fill this method and update the return
-        pass
-
-    def delete_member(self, id):
-        # fill this method and update the return
-        pass
-
-    def get_member(self, id):
-        # fill this method and update the return
-        pass
-
-    # this method is done, it returns a list with all the family members
+    1# this method is done, it returns a list with all the family members
     def get_all_members(self):
         return self._members
+
+
+    # 2. Endpoint para recuperar un miembro de la familia
+    def get_member(self, id):
+        pass
+
+    # 3. Endpoint para añadir miembros a la familia
+    def add_member(self, member):
+        if "id" not in member:
+            member["id"] = self._generateId()
+        if "last_name" not in member:
+            member["last_name"] = self.last_name
+        self._members.append(member)
+
+    # 4. Endpoint para eliminar un miembro de la familia
+    def delete_member(self, id):
+        pass
+
+
+    
