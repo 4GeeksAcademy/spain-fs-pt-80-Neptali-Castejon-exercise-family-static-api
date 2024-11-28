@@ -38,7 +38,9 @@ class FamilyStructure:
 
     # 4. Endpoint para eliminar un miembro de la familia
     def delete_member(self, id):
-        pass
-
-
+        for member in self._members:
+            if member["id"] == id:
+                self._members.remove(member)
+                return True
+        return False 
     

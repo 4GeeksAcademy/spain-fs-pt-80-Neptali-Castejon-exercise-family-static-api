@@ -62,11 +62,18 @@ def add_member():
         return jsonify({"message": str(e)}), 500
 
 
-
 # 4. Endpoint para eliminar un miembro de la familia
-
-
-
+@app.route('/members/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    try:
+        result = jackson_family.delete_member(member_id)
+        if result:
+            return jsonify({"message": "Member deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Member not found"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
