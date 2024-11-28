@@ -11,8 +11,7 @@ from random import randint
 class FamilyStructure:
     def __init__(self, last_name):
         self.last_name = last_name
-
-        # example list of members
+        self._next_id = 1
         self._members = []
 
     # read-only: Use this method to generate random members ID's when adding members into the list
@@ -23,10 +22,13 @@ class FamilyStructure:
     def get_all_members(self):
         return self._members
 
-
     # 2. Endpoint para recuperar un miembro de la familia
     def get_member(self, id):
-        pass
+        # Busca el miembro con el id en la lista
+        for member in self._members:
+            if member["id"] == id:
+                return member
+        return None 
 
     # 3. Endpoint para añadir miembros a la familia
     def add_member(self, member):
@@ -41,6 +43,6 @@ class FamilyStructure:
         for member in self._members:
             if member["id"] == id:
                 self._members.remove(member)
-                return True
+                return True  # Retorna True si el miembro fue encontrado y eliminado
         return False 
     

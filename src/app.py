@@ -36,10 +36,20 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
-
-
 # 2. Endpoint para recuperar un solo miembro de la familia
-
+@app.route('/members/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    try:
+        # Llamar al método get_member de la clase FamilyStructure
+        member = jackson_family.get_member(member_id)
+        
+        # Si se encuentra el miembro, se devuelve como respuesta JSON
+        if member:
+            return jsonify({"family_member": member}), 200
+        else:
+            return jsonify({"message": "Member not found"}), 404
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
 # 3. Endpoint para añadir miembros a la familia
