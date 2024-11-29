@@ -26,18 +26,17 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/members', methods=['GET'])
-def handle_hello():
+def all_members():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
-    return jsonify(response_body), 200
+
+    if members == []:
+        return jsonify({"msg": "No hay miembreos"}), 404
+    return jsonify(members), 200
 
 
 # 2. Endpoint para recuperar un solo miembro de la familia
-@app.route('/members/<int:member_id>', methods=['GET'])
+@app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     try:
         # Llamar al método get_member de la clase FamilyStructure
@@ -45,7 +44,7 @@ def get_member(member_id):
         
         # Si se encuentra el miembro, se devuelve como respuesta JSON
         if member:
-            return jsonify({"family_member": member}), 200
+            return jsonify(member), 200
         else:
             return jsonify({"message": "Member not found"}), 404
     except Exception as e:
@@ -53,36 +52,36 @@ def get_member(member_id):
 
 
 # 3. Endpoint para añadir miembros a la familia
-@app.route('/members', methods=['POST'])
+@app.route('/member', methods=['POST'])
 def add_member():
     try:
-        body = request.get_json()
-        if not body:
+        request_body = request.json
+        if not request_body:
             return jsonify({"message": "Request body is empty"}), 400
 
-        if "first_name" not in body or "age" not in body or "lucky_numbers" not in body:
+        if "first_name" not in request_body or "age" not in request_body or "lucky_numbers" not in request_body:
             return jsonify({"message": "Missing required fields: 'first_name', 'age', or 'lucky_numbers'"}), 400
 
         # Agregamos el nuevo miembro usando el método de la clase
-        jackson_family.add_member(body)
+        members = jackson_family.add_member(request_body)
 
         # Respuesta exitosa
-        return jsonify({"message": "Member added successfully"}), 201
+        return jsonify(members, {"message": "Member added successfully"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
 
 # 4. Endpoint para eliminar un miembro de la familia
-@app.route('/members/<int:member_id>', methods=['DELETE'])
-def delete_member(member_id):
+@app.route('/member/<int:id>', methods=['DELETE'])
+def delete_member(id):
     try:
-        result = jackson_family.delete_member(member_id)
+        result = jackson_family.delete_member(id)
         if result:
-            return jsonify({"message": "Member deleted successfully"}), 200
+            return jsonify({"done": True, "message": "Member deleted successfully"}), 200
         else:
             return jsonify({"message": "Member not found"}), 404
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        return jsonify({"message": int(e)}), 500
     
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
